@@ -5,11 +5,14 @@ import Controller from "../components/controller/Controller.js";
 import RosCamera from "../components/rosCamera/RosCamera.js";
 import IpCamera from "../components/ipCamera/IpCamera.js";
 import ScriptRunner from "../components/scriptRunner/ScriptRunner.js";
+import Chat from "../components/chat/chat.js";
 
 import Xbox from "../components/xbox/Xbox.js";
 
 export let getWidgetComponent = (data) => {
   switch (data.type) {
+    case "chat":
+      return <Chat props={data.savedProps} />;
     case "settings":
       return <Settings props={data.savedProps} />;
     case "ros_camera":

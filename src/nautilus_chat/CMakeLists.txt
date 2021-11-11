@@ -208,3 +208,7 @@ include_directories(
 catkin_install_python(PROGRAMS scripts/pub.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+
+catkin_install_python(PROGRAMS scripts/sub.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
