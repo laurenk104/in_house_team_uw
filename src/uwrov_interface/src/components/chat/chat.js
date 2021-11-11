@@ -1,29 +1,28 @@
 import React from "react"
 
-var count = 0;
-var list = [];
-
-export default class Chat extends React.Component { 
+function Text(props) {
+  const text = props.text;
+  return text.split('\n').map(str => <p>{str}</p>);
+}
+export default class Chat extends React.Component {
   constructor(props) {
     super(props)
     this.socket = require('socket.io-client')('http://localhost:4040')
+    this.state = {
+      text: "Placeholder Text",
+    }
     this.socket.on("Chat", this.updateChat);
   }
 
   updateChat = (data) => {
-    console.log("received new message..." + data.text);
-    if (count == 10) {
-      list.shift();
-      count -= 1;
-    }
-    list.push(data.text);
-    count += 1;
+    console.log("received new message: " + data.text);
+    this.setState({ text: data.text });
   }
 
   render() {
     return (
       <div className="text-box">
-        Test
+        <Text text={this.state.text}/>
       </div>
     )
   }
