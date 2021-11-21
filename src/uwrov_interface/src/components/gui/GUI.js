@@ -13,8 +13,7 @@ class GUI extends React.Component {
       keybindings: {}
     },
     consoleShow: false,
-    widgets: [ new Widget("chat"),
-               new Widget("script_runner")]
+    widgets: [ new Widget("chat"), new Widget("chatsender") ]
   };
 
 

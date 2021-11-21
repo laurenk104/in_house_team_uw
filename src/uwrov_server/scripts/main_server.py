@@ -7,6 +7,7 @@ from flask_socketio import SocketIO, send, emit
 
 from publishers.channel_pub import ChannelPub
 from publishers.move_pub import MovePub
+from publishers.chat_pub import ChatPub
 
 from subscribers.image_sub import ImageSub
 from subscribers.chat_sub import ChatSub
@@ -46,7 +47,8 @@ subscribers = {
 # Map of handles to rospy pub objects
 publishers = {
     'move_h': PubInfo('/nautilus/motors/commands', None),
-    'channel_h': PubInfo('/nautilus/cameras/switch', None)
+    'channel_h': PubInfo('/nautilus/cameras/switch', None),
+    'chat_h': PubInfo('/nautilus/chat', None)
 }
 
 
@@ -63,6 +65,12 @@ def set_image_camera(cam_num):
 @sio.on("Send State")
 def send_move_state(data):
     publishers['move_h'].pub.update_state(data)
+
+
+@sio.on("ChatSender")
+def send_chat(data):
+    rospy.loginfo(data)
+    publishers['chat_h'].pub.publish(data)
 
 
 def shutdown_server(signum, frame):
@@ -89,6 +97,7 @@ if __name__ == '__main__':
 
     publishers['channel_h'].pub = ChannelPub(publishers['channel_h'].ros_topic)
     publishers['move_h'].pub = MovePub(publishers['move_h'].ros_topic)
+    publishers['chat_h'].pub = ChatPub(publishers['chat_h'].ros_topic)
 
     # Define a way to exit gracefully
     signal.signal(signal.SIGINT, shutdown_server)

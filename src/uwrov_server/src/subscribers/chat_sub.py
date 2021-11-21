@@ -5,6 +5,9 @@ from flask_socketio import SocketIO
 from .subscriber import ServerSub
 
 class ChatSub(ServerSub):
+    """
+    Subscriber to receive chat messages
+    """
     def __init__(self, topic, sio_route, sio):
         super().__init__(topic, String)
         self.sio_route = sio_route

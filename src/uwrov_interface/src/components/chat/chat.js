@@ -1,28 +1,34 @@
 import React from "react"
-
-function Text(props) {
-  const text = props.text;
-  return text.split('\n').map(str => <p>{str}</p>);
-}
 export default class Chat extends React.Component {
   constructor(props) {
     super(props)
     this.socket = require('socket.io-client')('http://localhost:4040')
     this.state = {
-      text: "Placeholder Text",
+      text: [],
     }
     this.socket.on("Chat", this.updateChat);
   }
 
   updateChat = (data) => {
-    console.log("received new message: " + data.text);
-    this.setState({ text: data.text });
+    console.log(data.text);
+    if (this.state.text.length == 5) {
+      // maintain array length of 5
+      this.setState({
+        
+      })
+    }
+    this.setState({
+      text: this.state.text.concat([data.text])
+    })
+    console.log(this.state.text)
   }
 
   render() {
     return (
-      <div className="text-box">
-        <Text text={this.state.text}/>
+      <div className="text">
+        {
+          this.state.text.map(entry => <div>{entry}<br/></div>)
+        }
       </div>
     )
   }
