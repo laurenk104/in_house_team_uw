@@ -7,6 +7,7 @@ from flask_socketio import SocketIO, send, emit
 
 from publishers.channel_pub import ChannelPub
 from publishers.move_pub import MovePub
+from publishers.user_webcam_pub import UserWebcamPub
 
 from subscribers.image_sub import ImageSub
 
@@ -31,7 +32,6 @@ class PubInfo:
 app = Flask(__name__)
 sio = SocketIO(app, cors_allowed_origins="*", async_mode='gevent')
 
-
 # Maps socketio image id to ROS topic name
 image_handles = ['camera_stream', 'img_sub']
 
@@ -44,7 +44,7 @@ subscribers = {
 # Map of handles to rospy pub objects
 publishers = {
     'move_h': PubInfo('/nautilus/motors/commands', None),
-    'channel_h': PubInfo('/nautilus/cameras/switch', None)
+    'channel_h': PubInfo('/nautilus/cameras/switch', None),
 }
 
 
@@ -61,6 +61,19 @@ def set_image_camera(cam_num):
 @sio.on("Send State")
 def send_move_state(data):
     publishers['move_h'].pub.update_state(data)
+
+
+@sio.on("Send User Webcam Frame")
+def send_user_webcam(data):
+    publisher_name = 'user_webcam_h_' + str(data["channel"])
+    topic_name = '/nautilus/cameras/user_webcam/' + str(data["channel"])
+
+    # Add this channel to publishers if it doesn't exist
+    if publisher_name not in publishers:
+        publishers[publisher_name] = PubInfo(topic_name, UserWebcamPub(topic_name))
+
+    # Send the frame
+    publishers[publisher_name].pub.update_video_frame(data["blob"])
 
 
 def shutdown_server(signum, frame):
