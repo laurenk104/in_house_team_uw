@@ -13,9 +13,8 @@ class GUI extends React.Component {
             keybindings: {}
         },
         consoleShow: false,
-        widgets: [new Widget("user_webcam")]
+        widgets: [new Widget("chat"), new Widget("chatsender"), new Widget("user_webcam")]
     };
-
 
     addWidget = (widgetName) => {
         let widgets = this.state.widgets;
